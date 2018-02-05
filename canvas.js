@@ -3,20 +3,29 @@ var context = canvas.getContext('2d');
 var toggle = document.getElementById("toggle_button");
 var clear = document.getElementById("clear_button");
 var toggle_status = true;
+var prevX;
+var prevY;
+var started = false;
 
 var shape_maker = function(e) {
-  var mousepos = get_mouse_pos(canvas, e);
   if (toggle_status) { //circle
     context.beginPath();
-    context.arc(mousepos.x, mousepos.y, 30, 0, 2 * Math.PI);
-    context.stroke();
+    context.arc(e.offsetX, e.offsetY, 20, 0, 2 * Math.PI);
+    if (!started){
+      started = true;
+    }
+    else {
+      context.lineTo(prevX, prevY);
+    }
+    prevX = e.offsetX;
+    prevY = e.offsetY;
     context.fillStyle = "yellow";
+    context.stroke();
     context.fill();
   }
   else { //rectangle
     context.beginPath();
-    context.rect(mousepos.x - 25, mousepos.y - 25, 50, 50);
-    context.stroke();
+    context.rect(e.offsetX - 25, e.offsetY - 25, 50, 50);
     context.fillStyle = "red";
     context.fill();
   }
@@ -24,6 +33,7 @@ var shape_maker = function(e) {
 
 var clear_canvas = function(e) {
   context.clearRect(0, 0, canvas.width, canvas.height);
+  started = false;
 }
 
 //returns the relative x and y position of the mouse in the canvas
